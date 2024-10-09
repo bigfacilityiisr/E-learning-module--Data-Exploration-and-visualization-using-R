@@ -1,0 +1,88 @@
+#VOLCANO PLOT
+
+res <- read.csv("C:/Users/user/Desktop/Workshop 2023/Day 3/volcano.txt", sep="", stringsAsFactors=TRUE)
+head(res)
+
+# Make a basic volcano plot
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Volcano plot", xlim=c(-2.5,2)))
+
+# Add colored points: red if padj<0.05, orange of log2FC>1, green if both)
+with(subset(res, padj<.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+with(subset(res, abs(log2FoldChange)>1), points(log2FoldChange, -log10(pvalue), pch=20, col="pink"))
+with(subset(res, padj<.05 & abs(log2FoldChange)>1), points(log2FoldChange, -log10(pvalue), pch=20, col="green"))
+
+# Label points with the textxy function from the calibrate plot
+install.packages("calibrate")
+library(calibrate)
+with(subset(res, padj<.05 & abs(log2FoldChange)>1), textxy(log2FoldChange, -log10(pvalue), labs=Gene, cex=.8))
+
+#HEATMAP
+library("ggplot2")
+heatdata <- read.csv(file = "C:/Users/user/Desktop/Workshop 2023/Day 3/heat1.csv")
+
+heatmap <- ggplot(data = heatdata, mapping = aes(x = Sample.name,
+                                                       y = Class,
+                                                       fill = Abundance)) +
+  geom_tile() +
+  xlab(label = "Sample")
+
+heatmap
+
+#faceting the heatmap
+facetheatmap <- ggplot(data = heatdata, mapping = aes(x = Sample.name,
+                                                       y = Class,
+                                                       fill = Abundance)) +
+  geom_tile() +
+  xlab(label = "Sample") +
+  facet_grid(~ Depth, scales = "free_x", space = "free_x")
+
+facetheatmap
+#switching the labels
+labelchange_heatmap <- ggplot(data = heatdata, mapping = aes(x = Sample.name,
+                                                       y = Class,
+                                                       fill = Abundance)) +
+  geom_tile() +
+  xlab(label = "Sample") +
+  facet_grid(~ Depth, switch = "x", scales = "free_x", space = "free_x")
+
+labelchange_heatmap
+#scaling the data
+heatdata$Sqrt.abundance <- sqrt(heatdata$Abundance)
+scaleheatmap <- ggplot(data = heatdata, mapping = aes(x = Sample.name,
+                                                       y = Class,
+                                                       fill = Sqrt.abundance)) +
+  geom_tile() +
+  xlab(label = "Sample") +
+  facet_grid(~ Depth, switch = "x", scales = "free_x", space = "free_x")
+
+scaleheatmap
+#add title
+heatdata$Sqrt.abundance <- sqrt(heatdata$Abundance)
+titleheatmap <- ggplot(data = heatdata, mapping = aes(x = Sample.name,
+                                                       y = Class,
+                                                       fill = Sqrt.abundance)) +
+  geom_tile() +
+  xlab(label = "Depth (m)") +
+  facet_grid(~ Depth, switch = "x", scales = "free_x", space = "free_x") +
+  scale_fill_gradient(name = "Sqrt(Abundance)",
+                      low = "#FFFFFF",
+                      high = "#012345") +
+  theme(strip.placement = "outside",
+        plot.title = element_text(hjust = 0.5)) +
+  ggtitle(label = "Microbe Class Abundance")
+
+titleheatmap
+
+#installing packages from bioconductor
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("DESeq2")
+library(DESeq2)
+
+#try again
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("microRNAome")
