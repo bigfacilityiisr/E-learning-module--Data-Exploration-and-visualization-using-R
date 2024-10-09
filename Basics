@@ -1,0 +1,235 @@
+1+2
+pi
+
+
+#Datatypes in R
+#Numeric
+num <- 1.2 #assigning the value 1.2 to the variable num
+print(num) #print the value of num
+class(num) #print the datatype of num
+#Integer
+int <- as.integer(2.2) #Is 2.2 an integer?
+print(int)
+class(int)
+#character
+char <- "R is wonderful"
+print(char)
+class(char)
+
+char1 <- "12345" #Any guess to what this will return??
+print(char1)
+class(char1)
+#logical
+log_true <- TRUE
+print(log_true)
+class(log_true)
+log_false <- FALSE
+print(log_false)
+class(log_false)
+
+#factor
+fac <- factor(c("normal", "treatment1", "treatment2","treatment1", "normal", "treatment2"))
+print(fac)
+class(fac)
+levels(fac)
+nlevels(fac)
+class(levels(fac))
+
+#lists
+lis1 <- 1:5
+lis1
+lis2 <- factor(1:5)
+lis2
+lis3 <- letters[1:5]
+lis3
+combined_list <- list(lis1, lis2, lis3)
+combined_list #list of lists
+combined_list[[3]]
+combined_list[[3]][5]
+flat_list <- unlist(combined_list)
+class(flat_list)
+flat_list
+length(flat_list)
+
+#Vectors
+values <- c(88,65,90,40,65) #numeric vector
+class(values)
+length(values)
+values[4]
+values[6] #Guess the result!!
+values[2:5] #slicing
+
+char_vector <- c("a", "b", "c") #character vector
+print(char_vector)
+class(char_vector)
+length(char_vector)
+char_vector[1:3]
+
+char_num_vec <- c(1,2, "a") #what happens when a numeric and character values are mixed in a vector?
+class(char_num_vec)
+
+vec <- c(1:1000) #vector using slicing
+vec[length(vec)]
+vec[length(vec)/2]
+
+#Matrix
+#M <- matrix(vector, nrow=r, ncol=c, byrow=FALSE, dimnames=list(char_vector_rownames, char_vector_colnames))
+mat1 <- matrix(1:4, nrow = 2, ncol = 2) # create a matrix using a range of values
+mat1
+mat1[1,2]
+mat1[2, ] #extract 2nd row
+mat1[,2 ] #extract 2nd column
+
+mat2 <- matrix(13:16, nrow = 2, ncol = 2)
+mat2
+mat1+mat2 #adding two matrices
+mat1 - mat2 #subtraction of two matrices
+4 * mat1 #multiplication by a constant
+(mat1/mat2) #division
+
+
+M1 = matrix( c('AI','ML','DL','Tensorflow','Pytorch','Keras'), nrow = 2, ncol = 3, byrow = TRUE) # 2 rows and 3 columns
+print(M1)
+M2 = matrix( c('AI','ML','DL','Tensorflow','Pytorch','Keras'), nrow = 3, ncol = 2, byrow = TRUE) # 3 rows and 2 columns
+print(M2)
+M3 = matrix( c('AI','ML','DL','Tensorflow','Pytorch','Keras'), nrow = 2, ncol = 3, byrow = FALSE)# fill the matrix by column
+print(M3)
+M3[2,2]
+
+
+t(M3) #transpose a matrix
+
+#Array
+#my_array <- array(data, dim = (rows, colums, matrices, dimnames)
+v1 <- c(1,2,3)
+v2 <- c(4,5,6,7,8,9)
+result <- array(c(v1,v2),dim = c(3,3,2)) # a 3x3 matrix in 2D
+result
+result <- array(c(v1,v2),dim = c(3,3,3)) #multidimentionality, a 3x3 matrix in 3D
+result
+
+#List
+num_list = c(3,4,5)   
+char_list = c("a", "b", "c", "d", "e")
+logic_list = c(TRUE, TRUE, FALSE, TRUE)
+out_list = list(num_list, char_list, logic_list, 3)
+out_list
+
+#Data Frame
+gene_list = c("Gene 1", "Gene 2", "Gene 3")
+count_info = c(30,49,54)
+in_tissue = c(TRUE, FALSE, TRUE)
+data_frame = data.frame(gene_list, count_info, in_tissue)
+data_frame
+
+gene_data <- data.frame(gene_list1 = c("ACE2", "BRCA2", "TP53"),
+                    snp = c(TRUE, FALSE, FALSE),
+                    count_data = c(13, 28, 31))
+gene_data
+str(gene_data)
+
+#Playing with datasets
+
+data(package = "datasets")
+data(PlantGrowth)
+covid <-read.delim("C:/Users/user/Desktop/Schedule/covid.txt", header = TRUE)
+head(covid)
+tail(covid)
+covid <-read.delim("C:/Users/user/Desktop/Schedule/covid.txt", header = FALSE)
+head(covid)
+covid <- read.delim("C:/Users/user/Desktop/Schedule/covid.txt", header = TRUE, skip = 3) #skip first 3 lines
+head(covid)
+covid <-read.delim("C:/Users/user/Desktop/Schedule/covid.txt", header = TRUE)
+irisdata <- read.csv(url("http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"), header=FALSE)
+colnames(irisdata) <- c("sepal.length","sepal.width","petal.length","petal.width","species")
+head(irisdata)
+
+#dataframe indexing
+covid[2,3]	#value in second row, third column
+covid[,1]	#first column, as a vector
+covid[2,]	#second row, as a data.frame
+covid[,2:3]	#second and third columns, as a data.frame
+covid[1]	#first column, as a data.frame
+covid[1:5, c(3,5)]	#rows 1-5, columns 3 and 5 
+covid[,-1]	#everything but the first column
+covid[nrow(covid):1,]	#everything, with rows in reverse order
+covid[covid[,2] < 10000,]	#rows of covid (with all columns) where the value in the first column is less than 10000
+covid$State.UTs	#State.UTs column, as a vector
+covid[,"State.UTs"]	#State.UTs column, as a vector
+covid[,c("State.UTs", "Active")]	#State.UTs and Active columns, as a data.frame
+covid["10",]	#row named "10", as a data.frame
+covid["State.UTs"]	#State.UTs column, as a data.frame
+covid[order(covid$Active), c("State.UTs", "Total.Cases", "Deaths", "Active")] #ordering according to active cases and displaying only 4 columns
+nrow(covid) 
+ncol(covid)
+dim(covid)
+str(covid)
+plot(covid)
+summary(covid)
+summary(covid$Total.Cases)
+min(covid$Total.Cases)
+max(covid$Total.Cases)
+sd(covid$Total.Cases)
+var(covid$Total.Cases)
+prod(covid$Total.Cases)
+sum(covid$Active)
+
+
+
+
+#Data wrangling with Dplyr
+
+#install.packages("dplyr") 
+library(dplyr)
+
+#Selecting columns
+select_data <-select(covid, State.UTs, Total.Cases, Deaths)
+head(select_data)
+
+head(select(covid, -Discharged)) #To select all the columns except a specific column
+head(select(covid, State.UTs:Deaths)) #To select a range of columns
+head(select(covid, starts_with("D")))
+head(select(covid, ends_with("s")))
+head(select(covid, contains("Ratio")))
+head(select(covid, contains("hs")))
+
+#Filtering rows
+filter(covid, Deaths >= 16000)
+filter(covid, Active >= 10000, Deaths >= 10000)
+
+#Pipe operator: %>%
+covid %>% 
+  select(State.UTs, Total.Cases, Deaths) %>% 
+  head
+
+covid %>% arrange(Active) %>% head
+
+
+covid %>% 
+  select(State.UTs, Total.Cases, Deaths) %>%
+  arrange(Deaths, Total.Cases) %>% 
+  head
+
+covid %>% 
+  select(State.UTs, Total.Cases, Deaths) %>%
+  arrange(Total.Cases, Deaths) %>% 
+  filter(Deaths <= 250)
+
+covid %>% 
+  mutate(Ratio = Active / Total.Cases) %>%
+  head
+glimpse(covid)
+
+#summarizing your data
+summarise(covid, mean = mean(Deaths))
+summarise(covid, min = min(Deaths))
+summarise(covid, max = max(Deaths))
+summarise(covid, med = median(Deaths))
+
+#random sampling
+# Printing three rows
+sample_n(covid, 3) #3 random samples
+sample_n(covid, 3) #sample again
+
+# Printing 50 % of the rows
+sample_frac(covid, 0.10)
