@@ -1,0 +1,260 @@
+install.packages("ggplot2")
+library(ggplot2)
+
+#A simple qplot
+x <- 1:10
+x
+y = x*x
+y
+qplot(x,y)
+qplot(x, y, geom=c("line", "point"))
+qplot(x, y, geom=c("line"))
+
+#SCATTERPLOTS
+
+#Qplot on a dataset
+data(mtcars)
+head(mtcars)
+qplot(mpg, wt, data=mtcars)
+qplot(cyl, wt, data=mtcars)
+#Scatter plots with smoothed line
+#The option smooth is used to add a smoothed line with its standard error
+qplot(mpg, wt, data = mtcars, geom = c("point", "smooth"))
+
+#Smoothed line by groups
+qplot(mpg, wt, data = mtcars, color = factor(cyl),
+      geom=c("point", "smooth"))
+
+#Change the color by a continuous numeric variable
+qplot(mpg, wt, data = mtcars, colour = cyl)
+
+# Change the color by groups (factor)
+df <- mtcars
+df[,'cyl'] <- as.factor(df[,'cyl']) #convert the cyl column to a factor
+qplot(mpg, wt, data = df, colour = cyl)
+
+# Change the size of points according to  the values of a continuous variable
+qplot(mpg, wt, data = mtcars, size = mpg)
+
+# Change point shapes by groups
+qplot(mpg, wt, data = mtcars, shape = factor(cyl))
+
+#Scatter plot with texts
+qplot(mpg, wt, data = mtcars, label = rownames(mtcars), 
+      geom=c("point", "text"),
+      hjust=0, vjust=0)
+
+#BOX PLOT
+data("PlantGrowth")
+head(PlantGrowth)
+qplot(group, weight, data = PlantGrowth, 
+      geom=c("boxplot"))
+qplot(group, weight, data = PlantGrowth, color = group, 
+      geom=c("boxplot"))
+qplot(group, weight, data = PlantGrowth, 
+      geom=c("boxplot", "jitter"), fill = group)
+
+#DOT PLOT
+qplot(group, weight, data = PlantGrowth, 
+      geom=c("dotplot"), 
+      stackdir = "center", binaxis = "y")
+qplot(group, weight, data = PlantGrowth, 
+      geom = "dotplot", stackdir = "center", binaxis = "y",
+      color = group, fill = group)
+
+#VIOLIN PLOT
+qplot(group, weight, data = PlantGrowth, 
+      geom=c("violin"), trim = FALSE)
+
+#HISTOGRAM
+set.seed(3)
+
+created = data.frame(
+  leaf_type = factor(rep(c("Simple", "Compound"), each=200)),
+  leaf_number = c(rnorm(200, 5), rnorm(200, 8)))
+head(created)
+
+qplot(leaf_number, data = created, geom = "histogram")
+# Change histogram fill color by group (leaf_type)
+qplot(leaf_number, data = created, geom = "histogram",
+      fill = leaf_type)
+
+#DENSITY PLOTS
+qplot(leaf_number, data = created, geom = "density")
+# Change density plot line color by group (leaf_type)
+qplot(leaf_number, data = created, geom = "density",
+      color = leaf_type, linetype = leaf_type)
+#Adding axis labels and titles
+qplot(leaf_number, data = created, geom = "density",
+      color = leaf_type, linetype = leaf_type,
+      xlab = "Number of leaves", ylab = "Leaf Size", 
+      main = "Density plot of Weight")
+
+#STRIP CHART/ JITTER PLOT
+ToothGrowth
+str(ToothGrowth)
+ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+str(ToothGrowth)
+
+ggplot(ToothGrowth, aes(x=dose, y=len)) + 
+  geom_jitter()
+# Change the position
+# 0.2 : degree of jitter in x direction
+p<-ggplot(ToothGrowth, aes(x=dose, y=len)) + 
+  geom_jitter(position=position_jitter(0.2))
+p
+# Rotate the stripchart
+p + coord_flip()
+#show only two doses, 0.5 and 2
+p + scale_x_discrete(limits=c("0.5", "2"))
+#change the size of points
+ggplot(ToothGrowth, aes(x=dose, y=len)) + 
+  geom_jitter(position=position_jitter(0.2), cex=1.2)
+#change shape of points
+ggplot(ToothGrowth, aes(x=dose, y=len)) + 
+  geom_jitter(position=position_jitter(0.2), shape=17)
+#Change shape according to dose
+p <- ggplot(ToothGrowth, aes(x=dose, y=len, shape=dose)) + 
+  geom_jitter(position=position_jitter(0.2), cex=2)
+p
+p + scale_shape_manual(values=c(1,17,19))
+
+# Change shape and color according to dose
+p<-ggplot(ToothGrowth, aes(x=dose, y=len, shape=dose, color=dose)) +
+  geom_jitter(position=position_jitter(0.2), cex=2)
+p
+#choose your colors
+p+scale_color_manual(values=c("blue4", "magenta2", "firebrick4"))
+# Choose your palette
+p+scale_color_brewer(palette="Dark2")
+
+#Change the legend position
+p + theme(legend.position="top")
+p + theme(legend.position="bottom")
+p + theme(legend.position="none")
+
+#Change the order of items in the legend
+p + scale_x_discrete(limits=c("2", "0.5", "1"))
+
+#Stripchart with multiple groups
+# Change stripchart colors by groups
+p <- ggplot(ToothGrowth, aes(x=dose, y=len, color=supp)) +
+  geom_jitter(position=position_jitter(0.2))
+p
+#Themes in ggplot
+p + theme_gray()
+p + theme_bw()
+p + theme_linedraw()
+p + theme_light()
+p + theme_dark()
+p + theme_minimal()
+p + theme_classic()
+p + theme_void()
+
+# PIE CHART
+countdata <- c(3,7,9,1,2)
+species = c("A","B","C","D","E")
+pie(countdata , species)
+
+#Non-circular piechart
+install.packages("RColorBrewer")
+library(RColorBrewer)
+myPalette <- brewer.pal(5, "Set2")
+pie(countdata , labels = species, border="white", col=myPalette, edges = 10 )
+
+#RIDGELINE PLOT
+install.packages("ggridges")
+library(ggridges)
+ggplot(iris, aes(x = Sepal.Length, y = Species)) + geom_density_ridges()
+
+
+
+
+#VOLCANO PLOT
+
+res <- read.csv("C:/Users/user/Desktop/Workshop 2023/Day 3/volcano.txt", sep="", stringsAsFactors=TRUE)
+head(res)
+
+# Make a basic volcano plot
+with(res, plot(log2FoldChange, -log10(pvalue), pch=20, main="Volcano plot", xlim=c(-2.5,2)))
+
+# Add colored points: red if padj<0.05, orange of log2FC>1, green if both)
+with(subset(res, padj<.05 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+with(subset(res, abs(log2FoldChange)>1), points(log2FoldChange, -log10(pvalue), pch=20, col="pink"))
+with(subset(res, padj<.05 & abs(log2FoldChange)>1), points(log2FoldChange, -log10(pvalue), pch=20, col="green"))
+
+# Label points with the textxy function from the calibrate plot
+install.packages("calibrate")
+library(calibrate)
+with(subset(res, padj<.05 & abs(log2FoldChange)>1), textxy(log2FoldChange, -log10(pvalue), labs=Gene, cex=.8))
+
+#HEATMAP
+library("ggplot2")
+heatdata <- read.csv(file = "C:/Users/user/Desktop/Workshop 2023/Day 3/heat1.csv")
+
+heatmap <- ggplot(data = heatdata, mapping = aes(x = Sample.name,
+                                                       y = Class,
+                                                       fill = Abundance)) +
+  geom_tile() +
+  xlab(label = "Sample")
+
+heatmap
+
+#faceting the heatmap
+facetheatmap <- ggplot(data = heatdata, mapping = aes(x = Sample.name,
+                                                       y = Class,
+                                                       fill = Abundance)) +
+  geom_tile() +
+  xlab(label = "Sample") +
+  facet_grid(~ Depth, scales = "free_x", space = "free_x")
+
+facetheatmap
+#switching the labels
+labelchange_heatmap <- ggplot(data = heatdata, mapping = aes(x = Sample.name,
+                                                       y = Class,
+                                                       fill = Abundance)) +
+  geom_tile() +
+  xlab(label = "Sample") +
+  facet_grid(~ Depth, switch = "x", scales = "free_x", space = "free_x")
+
+labelchange_heatmap
+#scaling the data
+heatdata$Sqrt.abundance <- sqrt(heatdata$Abundance)
+scaleheatmap <- ggplot(data = heatdata, mapping = aes(x = Sample.name,
+                                                       y = Class,
+                                                       fill = Sqrt.abundance)) +
+  geom_tile() +
+  xlab(label = "Sample") +
+  facet_grid(~ Depth, switch = "x", scales = "free_x", space = "free_x")
+
+scaleheatmap
+#add title
+heatdata$Sqrt.abundance <- sqrt(heatdata$Abundance)
+titleheatmap <- ggplot(data = heatdata, mapping = aes(x = Sample.name,
+                                                       y = Class,
+                                                       fill = Sqrt.abundance)) +
+  geom_tile() +
+  xlab(label = "Depth (m)") +
+  facet_grid(~ Depth, switch = "x", scales = "free_x", space = "free_x") +
+  scale_fill_gradient(name = "Sqrt(Abundance)",
+                      low = "#FFFFFF",
+                      high = "#012345") +
+  theme(strip.placement = "outside",
+        plot.title = element_text(hjust = 0.5)) +
+  ggtitle(label = "Microbe Class Abundance")
+
+titleheatmap
+
+#installing packages from bioconductor
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("DESeq2")
+library(DESeq2)
+
+#try again
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("microRNAome")
